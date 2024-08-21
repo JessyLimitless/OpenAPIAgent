@@ -6,7 +6,7 @@
 
 ##### 1. 자료는 아래와 같은 8개 서비스가 구현되는 코드를 제공합니다.
 
-![서비스 전체 화면](
+![서비스 전체 화면](https://github.com/ban-hojin/OpenAPIAgent/blob/main/%EC%84%9C%EB%B9%84%EC%8A%A4%20%ED%99%94%EB%A9%B4%20%EC%98%88%EC%8B%9C.png
 ) 
 
 
