@@ -1,7 +1,7 @@
 ***
 
-####         <h3 style="color:blue;">OpenAI API로 My Agent 만들기 교재입니다.</h3> 
-
+### &nbsp;&nbsp;&nbsp;OpenAI &nbsp;&nbsp;&nbsp;API로&nbsp;&nbsp;&nbsp;My Agent 만들기&nbsp;&nbsp;&nbsp;교재입니다
+    
 ***
 
 ##### 1. 자료는 아래와 같은 8개 서비스가 구현되는 코드를 제공합니다.
