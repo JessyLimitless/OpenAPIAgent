@@ -1,51 +1,51 @@
-import openai
 import streamlit as st
 from langchain import OpenAI
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
+import openai
 
-# 1. OpenAI 호출 설정 (v1/chat/completions 엔드포인트)
-# OpenAI API 키를 하드코딩하여 설정합니다 (실제 배포 시 환경변수를 사용하는 것이 더 안전합니다)
-OPENAI_API_KEY = ""  # OpenAI API 키를 여기에 넣으세요
-TEMPERATURE = 0.99  # 모델의 창의성 설정
+# OpenAI API 설정
+openai.api_key = ""  # 하드코딩된 API 키
+MODEL_NAME = "gpt-3.5-turbo"
+TEMPERATURE = 0.99
 
-# OpenAI 모델을 직접 호출하는 함수
-def openai_chat(prompt):
+# OpenAI 모델 호출 함수
+def get_openai_response(prompt, conversation_history):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": "You are a helpful assistant."},
-                  {"role": "user", "content": prompt}],
+        model=MODEL_NAME,
+        messages=conversation_history + [{"role": "user", "content": prompt}],
         temperature=TEMPERATURE,
     )
     return response['choices'][0]['message']['content']
 
-# OpenAI 라이브러리 초기화
-openai.api_key = OPENAI_API_KEY
-
-# 2. ConversationChain 생성 및 메모리 설정
+# LangChain ConversationChain 설정
 memory = ConversationBufferMemory()
-conversation_chain = ConversationChain(llm=OpenAI(openai_api_key=OPENAI_API_KEY, temperature=TEMPERATURE), memory=memory)
+conversation_chain = ConversationChain(llm=OpenAI(model=MODEL_NAME, temperature=TEMPERATURE), memory=memory)
 
-# 4. Streamlit UI 구성
-st.title("GPT-3.5 Chatbot")
-st.write("GPT-3.5-turbo 모델과 대화를 나눠보세요. 아래 입력란에 질문을 입력하세요.")
+# Streamlit UI 구성
+st.title("GPT-3.5-turbo 챗봇 애플리케이션")
+st.write("질문을 입력해 보세요. 챗봇이 응답합니다.")
 
-# 5. 대화 기록 관리 및 표시 (세션 상태 사용)
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = []
+# 대화 기록 관리
+if "messages" not in st.session_state:
+    st.session_state.messages = []  # 대화 기록 초기화
 
-# 6. 사용자 입력 처리
-user_input = st.text_input("당신의 질문을 입력하세요:")
+# 사용자 입력 처리
+user_input = st.text_input("질문을 입력해 주세요:")
 
 if user_input:
-    # GPT-3.5-turbo 모델에 사용자 입력을 보내고 응답을 받음
-    bot_response = openai_chat(user_input)
+    # 사용자의 질문을 대화 기록에 추가
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    
+    # 챗봇 응답 생성
+    response = get_openai_response(user_input, st.session_state.messages)
+    
+    # 챗봇의 응답을 대화 기록에 추가
+    st.session_state.messages.append({"role": "assistant", "content": response})
 
-    # 대화 기록에 사용자 입력과 봇의 응답 추가
-    st.session_state['chat_history'].append({"role": "user", "content": user_input})
-    st.session_state['chat_history'].append({"role": "assistant", "content": bot_response})
-
-# 대화 기록을 화면에 표시 (st.chat_message 사용)
-for message in st.session_state['chat_history']:
-    with st.chat_message(message["role"]):
-        st.write(message["content"])
+# 대화 기록을 st.chat_message로 출력
+for msg in st.session_state.messages:
+    if msg["role"] == "user":
+        st.chat_message("user").write(msg["content"])
+    elif msg["role"] == "assistant":
+        st.chat_message("assistant").write(msg["content"])
