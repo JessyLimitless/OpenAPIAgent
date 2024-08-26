@@ -1,6 +1,6 @@
 ***
 
-####         OpenAI API로 My Agent 만들기 교재입니다. 
+####         <h3 style="color:blue;">OpenAI API로 My Agent 만들기 교재입니다.</h3> 
 
 ***
 
