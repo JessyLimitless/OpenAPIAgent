@@ -1,6 +1,6 @@
 ***
 
-### &nbsp;&nbsp;&nbsp;OpenAI &nbsp;&nbsp;&nbsp;API로&nbsp;&nbsp;&nbsp;My Agent 만들기&nbsp;&nbsp;&nbsp;교재입니다
+### &nbsp;&nbsp;OpenAI &nbsp;&nbsp;API로&nbsp;&nbsp;My Agent 만들기&nbsp;&nbsp;교재입니다
     
 ***
 
