@@ -1,6 +1,6 @@
 ***
 
-####         OpenAI API로 My Agent 만들기 교재를 위한 자료입니다. 
+####         OpenAI API로 My Agent 만들기 교재입니다. 
 
 ***
 
