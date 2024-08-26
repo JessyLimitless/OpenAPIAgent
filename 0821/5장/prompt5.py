@@ -4,42 +4,40 @@ from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 
-# OpenAI API Key 입력
+# OpenAI API 키
 OPENAI_API_KEY = ''
 
-# 텍스트 파일 로드 함수
-def load_text(file):
-    text = file.read().decode("utf-8")
-    return text
+# Streamlit 화면 구성
+st.title("📄 텍스트 문서 기반 챗봇")
+st.write("업로드한 텍스트 문서를 기반으로 질문에 답변하는 챗봇입니다.")
 
-# Streamlit UI 구성
-st.title("문서 기반 챗봇")
-st.write("텍스트 문서를 업로드하고, 질문을 입력하면 문서에 기반한 답변을 받을 수 있습니다.")
-
-# 텍스트 파일 업로드
+# 파일 업로드
 uploaded_file = st.file_uploader("텍스트 파일을 업로드하세요", type=["txt"])
 
 if uploaded_file is not None:
-    # 파일 로드 및 문서 처리
-    document = load_text(uploaded_file)
-    documents = [{"text": document}]
+    # 파일 내용 읽기
+    document = uploaded_file.read().decode("utf-8")
     
-    # 문서 임베딩 생성
+    # 문서 벡터화 및 임베딩 처리
+    documents = [{"text": document}]
     embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
     
-    # Faiss 벡터스토어 생성
+    # FAISS 벡터 저장소 생성
     vector_store = FAISS.from_texts([doc["text"] for doc in documents], embeddings)
     
-    # 질문에 답변하는 체인 생성
+    # OpenAI GPT 모델 설정
     llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-3.5-turbo")
     qa_chain = RetrievalQA.from_chain_type(llm, retriever=vector_store.as_retriever(), chain_type="stuff")
     
-    st.success("문서 처리가 완료되었습니다. 질문을 입력해보세요.")
+    st.write("문서 처리가 완료되었습니다. 질문을 입력하세요!")
     
-    # 질문 입력 및 답변 처리
+    # 질문 입력받기
     question = st.text_input("질문을 입력하세요:")
     
+    # 질문에 대한 답변 출력
     if question:
         answer = qa_chain({"query": question})
-        st.write("**질문:**", question)
-        st.write("**답변:**", answer['result'])
+        st.write("### 질문:")
+        st.write(question)
+        st.write("### 답변:")
+        st.write(answer['result'])
