@@ -4,27 +4,26 @@ from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 
-# OpenAI API 키 설정
-OPENAI_API_KEY = '' # 텍스트 파일 로드 함수
+OPENAI_API_KEY = ''
+
 def load_text(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         text = file.read()
-    return text # 텍스트 파일 경로 입력
+    return text
+
 file_path = input("텍스트 파일 경로를 입력하세요: ")
-document = load_text(file_path)  # 문서를 Langchain 형식으로 로드
+document = load_text(file_path)
+
 documents = [{"text": document}]
 
-# 문서 임베딩 생성
 embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
 
-# Faiss 벡터스토어 생성
 vector_store = FAISS.from_texts([doc["text"] for doc in documents], embeddings)
 
-# 질문에 답변하는 체인 생성
 llm = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-3.5-turbo")
 qa_chain = RetrievalQA.from_chain_type(llm, retriever=vector_store.as_retriever(), chain_type="stuff")
+print("문서 처리가 완료되었습니다.")
 
-print("문서 처리가 완료되었습니다.") # 질문 입력 및 처리
 while True:
     question = input("질문을 입력하세요 ('종료'를 입력하면 프로그램이 종료됩니다): ")
     if question.lower() == "종료":
@@ -36,6 +35,9 @@ while True:
         print("질문:", question)
         print("답변:", answer['result'])
     else:
-        print("질문을 입력해주세요.") 
-        
-        위 코드는 주피터노트북에서 실행되는 텍스트 문서 기반형 챗봇입니다. 여기에 스트림릿을 사용해서 화면을 만들어 주세요
+    
+        print("질문을 입력해주세요.")
+
+위 코드는 주피터노트북에서 실행되는 텍스트 문서 기반형 챗봇입니다. 파일 경로 대신 파일 내용을 바로 처리하는 방식으로 변경해주세요.
+여기에 스트림릿을 사용해서 화면을 만들어 주세요
+
