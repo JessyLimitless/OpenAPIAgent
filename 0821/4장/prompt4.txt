@@ -1,13 +1,52 @@
+!pip install openai
 
-Streamlit 앱을 개발하고자 합니다. 이 앱은 OpenAI의 GPT-3.5 Turbo 모델을 사용하여 복잡한 과학 주제를 초등학생도 쉽게 이해할 수 있도록 설명해주는 기능을 포함해야 합니다. 
+import openai
+from langchain.chat_models import ChatOpenAI
+from langchain.schema import SystemMessage, HumanMessage
 
-다음 요구 사항을 충족해야 합니다:
+# OpenAI API 키 설정
+OPENAI_API_KEY = ''  
 
-1. UI 구성: Streamlit을 사용해 사용자 인터페이스를 만듭니다.
-2. GPT 모델과의 상호작용: LangChain 라이브러리를 사용해 GPT-3.5 Turbo 모델과 상호작용합니다.
- 3. OpenAI API 키를 하드 코딩하여 설정해 주세요. 여기서 모델의 창의성(temperature)을 0.99로 설정해 주세요. 
-4. 사용자 입력: 사용자가 과학 주제를 입력할 수 있는 입력 필드를 제공합니다.
-5. 설명 생성: 사용자가 입력한 과학 주제에 대해 GPT 모델이 간단한 문장 구조와 일상적인 예시를 사용해 설명을 생성합니다. 설명은 초등학생이 이해할 수 있는 수준이어야 합니다.
-6. 결과 표시: 생성된 설명을 Streamlit 화면에 표시합니다.
+# 시스템 메시지 설정
+system_message = SystemMessage(content="""
+당신은 과학을 재미있게 설명해주는 과학 커뮤니케이터입니다. 당신의 임무는 복잡한 주제를 초등학생도 이해할 수 있도록 쉽게 설명하는 것입니다. 
+간단한 언어를 사용하고, 관련 있는 예시를 들며, 설명을 간결하고 흥미롭게 유지하세요.
+""")
 
-이 요구 사항에 따라 Python 코드를 작성해 주세요.
+# OpenAI Chat 모델 설정
+chat = ChatOpenAI(
+    temperature=0,
+    model_name='gpt-3.5-turbo',
+    openai_api_key=OPENAI_API_KEY
+)
+
+def get_explanation(topic):
+    try:
+        # 메시지 생성
+        messages = [
+            system_message,
+            HumanMessage(content=f"초등학생도 이해할 수 있게 {topic}에 대해 설명해 주세요. 간단한 언어와 예시를 사용하세요.")
+        ]
+        # 응답 생성
+        response = chat(messages)
+        # 응답 반환
+        return response.content
+    except Exception as e:
+        return f"Error: {e}"
+
+        if __name__ == "__main__":
+        
+    # 사용자 입력 받기
+    topic = input('설명할 과학 주제를 입력하세요: ')
+    
+    # 설명 생성
+    explanation = get_explanation(topic)
+    
+    # 결과 출력
+    if explanation.startswith("Error:"):
+        print(explanation)
+    else:
+        print('### 설명 📚')
+        print(explanation)
+
+  위 코드는 주피터노트북에서 실행되는 챗봇 입니다. 여기에 스트림릿을 사용해서 화면을 만들어 주세요
