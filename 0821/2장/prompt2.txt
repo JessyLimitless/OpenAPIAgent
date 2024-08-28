@@ -1,10 +1,27 @@
-Streamlit과 LangChain을 사용하여 사용자로부터 질문을 입력받고, OpenAI의 GPT-3.5-turbo 모델을 호출해 답변을 생성하는 파이썬 코드를 작성해 주세요. 이 코드는 다음과 같은 요구 사항을 충족해야 합니다:
+!pip install openai langchain streamlit langchain_community
 
-1. 사용자로부터 질문을 입력받는 텍스트 입력 폼을 제공해야 합니다.
-2. OpenAI API 키는 코드 내에 하드코딩하여 설정해 주세요.
-3. OpenAI 호출 시 v1/chat/completions 엔드포인트를 사용해 주세요.
-4. 사용자가 질문을 제출하면, GPT-3.5-turbo 모델을 호출해 답변을 생성합니다.
-5. 생성된 답변은 Streamlit의 st.info를 사용해 화면에 표시됩니다.
-6. ChatOpenAI 클래스에서 모델의 창의성(temperature)을 0.99로 설정해야 합니다.
+from langchain.chat_models import ChatOpenAI
+from langchain.schema import HumanMessage
 
-이 요구 사항을 바탕으로 코드를 작성해 주세요.
+# OpenAI API key 설정 (직접 입력)
+OPENAI_API_KEY =""
+
+def generate_response(input_text):
+    llm = ChatOpenAI(
+        temperature=0,  # 창의성 0으로 설정
+        model_name='gpt-3.5-turbo',  # 모델명
+        openai_api_key=OPENAI_API_KEY  # 직접 API 키 전달
+    )
+    messages = [HumanMessage(content=input_text)]  # 메시지 생성
+    response = llm(messages)  # 모델 호출
+    return response.content  # 응답 반환
+
+    # 사용자 입력 받기
+text = input('질문 입력: ')  # 첫 페이지가 실행될 때 보여줄 질문
+response = generate_response(text)  # 폼 제출 시 응답 생성
+print('응답:', response)  # 응답 출력
+
+위 코드는 주피터노트북에서 실행되는 챗봇 입니다. 여기에 스트림릿을 사용해서 화면을 만들어 주세요.
+
+
+
