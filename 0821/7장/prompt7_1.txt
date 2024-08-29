@@ -1,10 +1,50 @@
-Streamlit과 OpenAI의 GPT-3.5-turbo 모델을 사용하여 다국어 번역 애플리케이션을 만드는 Python 코드를 작성해 주세요. 다음 요구 사항을 충족해야 합니다:
+!pip install openai==0.28
 
-1. 텍스트 입력 필드: 사용자가 번역할 텍스트를 입력할 수 있는 입력 필드를 제공합니다.
-2. 언어 선택: 번역할 언어를 선택할 수 있는 라디오 버튼을 제공합니다.
-3. 번역 수행: OpenAI의 GPT-3.5-turbo 모델을 사용하여 사용자가 입력한 텍스트를 선택한 언어로 번역합니다. OpenAI API 키는 코드에 직접 코딩해 설정합니다.
-4. 결과 표시: 번역된 결과를 화면에 깔끔하고 강조된 형식으로 표시합니다. 번역된 텍스트는 크기를 키워 강조해 주세요.
-5. 대화 기록 관리: 세션 상태(st.session_state)를 사용해 입력된 텍스트와 번역된 결과를 대화 기록으로 저장하고, 대화 초기화 버튼을 제공합니다.
-6. UI 구성: Streamlit을 사용해 UI를 구성하고, 대화 기록을 화면에 표시합니다.
+import openai
 
-이 요구 사항에 따라 Python 코드를 작성해 주세요.
+# OpenAI API Key 설정
+OPENAI_API_KEY = ''
+openai.api_key = OPENAI_API_KEY
+
+# 사용자가 선택할 수 있는 언어 목록
+languages = {
+    "English": "en",
+    "Chinese": "zh",
+    "Japanese": "ja",
+    "Vietnamese": "vi"
+}
+
+def translate_text(text, target_language_code):
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": f"Translate the following text to {target_language_code}: {text}. Only provide the translated text without any additional information."}
+    ]
+    
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+    
+    translated_text = response.choices[0].message['content'].strip()
+    
+    return translated_text
+
+# 언어 선택
+print("Select the target language:")
+for i, lang in enumerate(languages.keys()):
+    print(f"{i + 1}. {lang}")
+
+choice = int(input("Enter the number corresponding to the target language: ")) - 1
+target_language = list(languages.keys())[choice]
+target_language_code = languages[target_language]
+
+# 텍스트 입력
+source_text = input("Enter the text to translate: ")
+
+# 번역 수행
+translated_text = translate_text(source_text, target_language_code)
+
+# 결과 출력
+print(f"\nTranslated Text:\n{translated_text}")
+
+위 코드는 주피터노트북에서 실행되는 챗봇 입니다. 여기에 스트림릿을 사용해서 화면을 만들어 주세요.
