@@ -1,9 +1,53 @@
-Streamlit과 OpenAI의 GPT-3.5-turbo 모델을 사용하여 보도자료 생성 애플리케이션을 만드는 Python 코드를 작성해 주세요. 이 애플리케이션은 다음 기능을 포함해야 합니다:
+!pip install openai==0.28
 
-1. 입력 필드 제공: 사용자가 보도자료를 작성하기 위해 다음 정보를 입력할 수 있는 필드를 제공합니다: 주제, 주요 내용, 발표 날짜, 회사 정보
-2. 보도자료 생성: 사용자가 입력한 정보를 바탕으로 GPT-3.5-turbo 모델을 사용해 설득력 있고 전문적인 보도자료를 생성합니다.
-3. 결과 출력: 생성된 보도자료를 화면에 출력합니다.
-4. 오류 처리: 보도자료 생성 중 오류가 발생할 경우, 사용자에게 오류 메시지를 표시합니다.
-5. 간단한 인터페이스: Streamlit을 사용해 간단한 UI를 구성하고, 사용자가 입력한 내용을 제출하면 결과를 화면에 표시합니다.
+import openai
 
-OpenAI API 키는 코드에 직접 하드코딩해 주세요.
+# OpenAI API 키 설정
+openai.api_key = ''
+
+def generate_press_release(topic, content, date, company_info):
+    # 보다 구체적인 프롬프트를 사용하여 설득력 있는 홍보 문구 생성
+    prompt = f"""
+    다음 정보에 기반하여 설득력 있고 전문적인 보도자료를 작성하십시오. :
+    주제: {topic}
+    주요 내용: {content}
+    발표 날짜: {date}
+    회사 정보: {company_info}
+
+    혜택을 강조하고, 잠재 고객의 우려를 해결하며, 강력한 행동 유도 문구를 포함하십시오.
+    """
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Specify the correct GPT-4 model designed for chat
+            messages=[
+                {"role": "system", "content": "전문적인 보도자료를 생성하십시오."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1000
+        )
+        return response['choices'][0]['message']['content']
+    except openai.error.OpenAIError as e:
+        print(f"An error occurred: {e}")
+        return None
+
+print('보도자료 생성기')
+
+# 사용자 입력 받기
+topic = input("주제: ")
+content = input("주요 내용: ")
+release_date = input("발표 날짜 (YYYY-MM-DD): ")
+company_info = input("회사 정보: ")
+
+if topic and content and company_info:
+    generated_press_release = generate_press_release(topic, content, release_date, company_info)
+    if generated_press_release:
+        print("보도자료가 성공적으로 생성되었습니다!")
+        print("\n보도자료:\n")
+        print(generated_press_release)
+    else:
+        print("보도자료 생성에 실패했습니다.")
+else:
+    print("모든 입력란을 채워주세요.")
+
+ 위 코드는 주피터노트북에서 실행되는 챗봇 입니다. 여기에 스트림릿을 사용해서 화면을 만들어 주세요.   
+
